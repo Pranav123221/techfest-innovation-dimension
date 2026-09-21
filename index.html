@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Techfest IIT Bombay — The Innovation Dimension</title>
+  <meta name="description" content="An immersive 3D scroll-driven journey exploring the Innovation Dimension for Techfest IIT Bombay." />
+
+  <!-- Google Fonts: Space Grotesk & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+  <!-- Custom Magnetic Cursor (Desktop only) -->
+  <div id="cursor-dot" class="cursor-dot" aria-hidden="true"></div>
+  <div id="cursor-ring" class="cursor-ring" aria-hidden="true"></div>
+
+  <!-- 3D Canvas Viewport -->
+  <canvas id="webgl-canvas" aria-hidden="true"></canvas>
+
+  <!-- Screen Noise / Vignette Texture Overlay -->
+  <div class="viewport-vignette" aria-hidden="true"></div>
+
+  <!-- HUD Overlay -->
+  <header class="hud-top">
+    <div class="hud-brand">
+      <span class="hud-brand-title">TECHFEST</span>
+      <span class="hud-brand-sub">IIT BOMBAY // 2026</span>
+    </div>
+    <div class="hud-center">
+      <span class="hud-tag">SYSTEM: STABLE</span>
+      <span class="hud-coords" id="hud-coords">POS: [0.00, 0.00, 24.00]</span>
+    </div>
+    <div class="hud-zone-indicator" id="hud-zone-indicator">
+      <span class="zone-current" id="zone-counter">00</span>
+      <span class="zone-slash">/</span>
+      <span class="zone-total">05</span>
+    </div>
+  </header>
+
+  <!-- Scroll Progress Rail -->
+  <div class="scroll-rail" aria-hidden="true">
+    <div class="scroll-thumb" id="scroll-thumb"></div>
+  </div>
+
+  <footer class="hud-bottom">
+    <div class="hud-bottom-left">
+      <span class="hud-pulse-node"></span>
+      <span class="hud-mono" id="hud-status-text">SCROLL TO TRAVEL</span>
+    </div>
+    <div class="hud-bottom-right">
+      <span class="hud-mono">TF-CORE v4.8 // 19°08'N 72°54'E</span>
+    </div>
+  </footer>
+
+  <!-- Interactive 3D Tooltip (Raycasting) -->
+  <div id="object-tooltip" class="object-tooltip" aria-hidden="true">
+    <div class="tooltip-header" id="tooltip-title">CORE ACTIVE</div>
+    <div class="tooltip-desc" id="tooltip-desc">INNOVATION NEXUS</div>
+  </div>
+
+  <!-- Loading Experience (Initialization Guarded) -->
+  <aside id="loader-screen" class="loader-screen" role="dialog" aria-modal="true" aria-label="Loading Experience">
+    <div class="loader-container">
+      <div class="loader-badge">IIT BOMBAY PRESENTS</div>
+      <h1 class="loader-title">TECHFEST</h1>
+      <p class="loader-sub">INITIALIZING INNOVATION DIMENSION...</p>
+
+      <div class="loader-track">
+        <div id="loader-bar" class="loader-fill"></div>
+      </div>
+
+      <div class="loader-telemetry">
+        <span id="loader-status">SYNCING PROCEDURAL GEOMETRIES...</span>
+        <span id="loader-percent">0%</span>
+      </div>
+
+      <button id="enter-btn" class="enter-btn" disabled>
+        <span class="btn-text">ENTER THE DIMENSION</span>
+        <span class="btn-arrow" aria-hidden="true">→</span>
+      </button>
+
+      <div class="loader-fallback-text">Click button to access WebGL engine</div>
+    </div>
+  </aside>
+
+  <!-- Scroll Sections (GSAP ScrollTrigger Targets) -->
+  <main id="smooth-wrapper">
+
+    <!-- HERO / START -->
+    <section class="dimension-section hero-section" id="sec-hero">
+      <div class="section-inner">
+        <span class="section-label">TF / DIMENSION 00</span>
+        <h2 class="hero-headline">
+          ENTER<br />
+          THE <span class="text-accent">INNOVATION</span><br />
+          DIMENSION.
+        </h2>
+        <p class="section-desc">
+          Where ideas leave the screen and become something you can physically experience.
+        </p>
+        <div class="scroll-cue">
+          <span>SCROLL TO DIVE</span>
+          <span class="scroll-cue-arrow">↓</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ZONE 01: COMPETE -->
+    <section class="dimension-section zone-section" id="sec-compete">
+      <div class="section-inner">
+        <span class="section-label">01 // ARENA</span>
+        <h2 class="zone-headline">
+          TURN<br />
+          CURIOSITY INTO<br />
+          <span class="text-accent">COMPETITION.</span>
+        </h2>
+        <p class="section-desc">
+          Challenge yourself through robotics, applied algorithmic logic, aeromodelling, and high-intensity problem solving.
+        </p>
+        <div class="feature-tags">
+          <span class="tech-tag">ROBOWARS</span>
+          <span class="tech-tag">CODRUN</span>
+          <span class="tech-tag">TECH-OLYMPIAD</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ZONE 02: BUILD -->
+    <section class="dimension-section zone-section right-aligned" id="sec-build">
+      <div class="section-inner">
+        <span class="section-label">02 // ARCHITECTURE</span>
+        <h2 class="zone-headline">
+          IDEAS ARE<br />
+          BETTER WHEN<br />
+          <span class="text-accent">THEY MOVE.</span>
+        </h2>
+        <p class="section-desc">
+          Transform theoretical blueprints into physical kinetic prototypes. The matrix constructs as you journey deeper.
+        </p>
+        <div class="feature-tags">
+          <span class="tech-tag">PROTOTYPING</span>
+          <span class="tech-tag">HARDWARE NEXUS</span>
+          <span class="tech-tag">SYSTEMS</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ZONE 03: EXPLORE -->
+    <section class="dimension-section zone-section" id="sec-explore">
+      <div class="section-inner">
+        <span class="section-label">03 // DISCOVERY</span>
+        <h2 class="zone-headline">
+          LOOK<br />
+          BEYOND THE<br />
+          <span class="text-accent">OBVIOUS.</span>
+        </h2>
+        <p class="section-desc">
+          Traverse high-velocity particle conduits into deep research, quantum nodes, international exhibits, and aerospace lectures.
+        </p>
+        <div class="feature-tags">
+          <span class="tech-tag">QUANTUM LABS</span>
+          <span class="tech-tag">EXHIBITIONS</span>
+          <span class="tech-tag">AEROSPACE</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ZONE 04: CONNECT -->
+    <section class="dimension-section zone-section right-aligned" id="sec-connect">
+      <div class="section-inner">
+        <span class="section-label">04 // NETWORK</span>
+        <h2 class="zone-headline">
+          MINDS<br />
+          MEET<br />
+          <span class="text-accent">HERE.</span>
+        </h2>
+        <p class="section-desc">
+          A dynamic synapsing cluster linking students, innovators, industry pioneers, and global researchers across one integrated mesh.
+        </p>
+        <div class="feature-tags">
+          <span class="tech-tag">SUMMITS</span>
+          <span class="tech-tag">INCUBATION</span>
+          <span class="tech-tag">COMMUNITY</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ZONE 05: THE NEXT FRONTIER -->
+    <section class="dimension-section frontier-section" id="sec-frontier">
+      <div class="section-inner center-aligned">
+        <span class="section-label">05 // CONVERGENCE</span>
+        <h2 class="zone-headline large">
+          THE NEXT<br />
+          FRONTIER<br />
+          <span class="text-accent">IS OPEN.</span>
+        </h2>
+        <p class="section-desc center">
+          Don't just watch what's next. Step directly into it. Asia's largest science and technology festival awaits.
+        </p>
+        <div class="cta-wrap">
+          <a href="https://techfest.org/" target="_blank" rel="noopener noreferrer" class="frontier-cta">
+            <span class="btn-text">EXPLORE TECHFEST.ORG</span>
+            <span class="btn-arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
+        <p class="disclaimer-text">
+          Independent 3D Experience Concept created for Techfest College Ambassador task.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- External Libraries loaded before custom script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <!-- Core 3D and Scroll Controller -->
+  <script src="./script.js"></script>
+</body>
+</html>
